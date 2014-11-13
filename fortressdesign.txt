@@ -1,0 +1,91 @@
+w = 30;
+d = 60;
+h = 30;
+
+dims = [w,d,h];
+
+//This difference allows for a cylindrical hole in which pencils can be stored.
+difference(){
+	translate([0,0,15])
+		cube(dims, $fn = 200, center=true);
+	translate([0,0,15])
+		cylinder(h = 30.1, r = 10, $fn = 200, center = true);
+}
+
+//These three variables are for the extension of the fortress which contains the doorway.
+extension_width = 10;
+extension_length = 20;
+extension_height = 15;
+
+dims2 = [extension_width,extension_length,extension_height];
+
+//These three variables are for the dimensions which help create the doorway. The difference helps in making the doorway.
+doorway_width = 5;
+doorway_length = 10;
+doorway_height = 7.5;
+
+dims3 = [doorway_width,doorway_length,doorway_height];
+
+difference(){
+
+	translate([15,0,7.5])
+		cube(dims2, $fn = 200, center=true);
+
+	translate([20,0,3.75])
+		cube(dims3, $fn = 200, center=true);
+}
+
+//This difference helps create part of a half-sphere and also extends the hole in which pencils can be stored.
+difference(){
+	difference(){
+		translate([0,0,30])
+			sphere(r=15, $fn = 200);
+		translate([0,0,54])
+			cube(dims, $fn = 200, center = true);
+	}
+
+	translate([0,0,22.55])
+		cylinder(h = 45.1, r = 10, $fn = 200, center = true);
+
+}
+
+//This union helps create a base for the entire fortress structure.
+union(){
+	translate([0,0,-2.5])
+		cube(size=[60,70,5], $fn = 200, center=true);
+
+	translate([0,-35,-2.5])
+		rotate(a = 90, v = [0,1,0]){
+			cylinder(h = 60, r = 2.5, $fn = 200, center=true);
+		}
+
+	translate([0,35,-2.5])
+		rotate(a = 90, v = [0,1,0]){
+			cylinder(h = 60, r = 2.5, $fn = 200, center=true);
+		}
+}
+
+//This module creates four towers at the corners of the fortress. The parameter determines how tall the towers are.
+module fourtowers(towerheight){
+	for (x = [-20 : 40 : 20], y = [-25, 25]){
+		difference(){
+			translate([x,y,towerheight/2])
+				cube(size = [10,10,towerheight], $fn = 200, center=true);
+			translate([x,y,towerheight])
+				sphere(r=8, $fn = 200);
+		}
+		translate([x,y,towerheight])
+			sphere(r = 8, $fn = 200);
+
+		if (x > 0)
+		{
+			translate([x,y,(towerheight + 9)])
+				cylinder(h = 6, r1 = 4, r2 = 0, center = true);
+		}else{
+			translate([x,y,(towerheight + 9)])
+				cylinder(h = 18, r1 = 4, r2 = 0, center = true);
+		}
+	}
+}
+
+fourtowers(45);
